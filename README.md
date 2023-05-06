@@ -50,7 +50,7 @@ This will produce an internal settings tree like the following:
 
 Each setting must have its Observer (that implements ObserverInterface).
 
-An observer can handle one or more settings in the same context.
+An observer can handle one or more settings.
 
 To register an Observer:
 
@@ -108,7 +108,7 @@ public static function dependencies(){
 }
 ```
 
-In this example, ff _settingB_ is equal to _certainValue_, then _settingA_ is properly returned. Otherwise, NULL is returned.
+In this example, if _settingB_ is equal to _certainValue_, then _settingA_ is properly returned. Otherwise, NULL is returned.
 
 Note: carefully consider that NULL should never be a default/proper setting value.
 
