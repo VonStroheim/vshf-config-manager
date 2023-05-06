@@ -47,14 +47,39 @@ final class Config
         $this->observers[ $context ][ $settingId ] = $observerClassName;
     }
 
-    public function getAllByContext(string $context = self::CONTEXT_APP): array
+    public function getAllByContextRaw(string $context = self::CONTEXT_APP): array
     {
         return $this->settings[ $context ] ?? [];
     }
 
-    public function getAll(): array
+    public function getAllByContext(string $context = self::CONTEXT_APP): array
+    {
+        $settings = [];
+        if (!isset($this->observers[ $context ])) {
+            return [];
+        }
+        foreach ($this->observers[ $context ] as $settingId => $observer) {
+            $settings[ $settingId ] = $this->get($settingId, $context);
+        }
+
+        return $settings;
+    }
+
+    public function getAllRaw(): array
     {
         return $this->settings;
+    }
+
+    public function getAll(): array
+    {
+        $settings = [];
+        foreach ($this->observers as $context => $observers) {
+            foreach ($observers as $settingId => $observer) {
+                $settings[ $context ][ $settingId ] = $this->get($settingId, $context);
+            }
+        }
+
+        return $settings;
     }
 
     public function get(string $settingId, string $context = self::CONTEXT_APP)

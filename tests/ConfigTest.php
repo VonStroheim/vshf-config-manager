@@ -12,20 +12,21 @@ class ConfigTest extends TestCase
     /**
      * @return void
      * @covers \VSHF\Config\Config::hydrate
+     * @covers \VSHF\Config\Config::getAllByContextRaw
      */
     public function testHydrate(): void
     {
         $cfg = new Config();
 
         $cfg->hydrate(['settingId_1' => 'settingValue_1']);
-        $this->assertArrayHasKey('settingId_1', $cfg->getAllByContext());
-        $this->assertArrayNotHasKey('settingId_2', $cfg->getAllByContext());
-        $this->assertCount(1, $cfg->getAllByContext());
+        $this->assertArrayHasKey('settingId_1', $cfg->getAllByContextRaw());
+        $this->assertArrayNotHasKey('settingId_2', $cfg->getAllByContextRaw());
+        $this->assertCount(1, $cfg->getAllByContextRaw());
 
         $cfg->hydrate(['settingId_2' => 'settingValue_2'], 'newContext');
-        $this->assertArrayHasKey('settingId_2', $cfg->getAllByContext('newContext'));
-        $this->assertArrayNotHasKey('settingId_1', $cfg->getAllByContext('newContext'));
-        $this->assertCount(1, $cfg->getAllByContext('newContext'));
+        $this->assertArrayHasKey('settingId_2', $cfg->getAllByContextRaw('newContext'));
+        $this->assertArrayNotHasKey('settingId_1', $cfg->getAllByContextRaw('newContext'));
+        $this->assertCount(1, $cfg->getAllByContextRaw('newContext'));
     }
 
     /**
@@ -103,21 +104,23 @@ class ConfigTest extends TestCase
     /**
      * @return void
      * @covers \VSHF\Config\Config::__construct
+     * @covers \VSHF\Config\Config::getAllRaw
+     * @covers \VSHF\Config\Config::getAllByContextRaw
      */
     public function test__construct(): void
     {
         $cfg = new Config();
-        $this->assertIsArray($cfg->getAll());
-        $this->assertIsArray($cfg->getAllByContext());
-        $this->assertIsArray($cfg->getAllByContext('unknownContext'));
+        $this->assertIsArray($cfg->getAllRaw());
+        $this->assertIsArray($cfg->getAllByContextRaw());
+        $this->assertIsArray($cfg->getAllByContextRaw('unknownContext'));
 
         $cfg = new Config(['settingId' => 'settingValue']);
-        $this->assertIsArray($cfg->getAll());
-        $this->assertIsArray($cfg->getAllByContext());
-        $this->assertIsArray($cfg->getAllByContext('unknownContext'));
+        $this->assertIsArray($cfg->getAllRaw());
+        $this->assertIsArray($cfg->getAllByContextRaw());
+        $this->assertIsArray($cfg->getAllByContextRaw('unknownContext'));
 
-        $this->assertArrayHasKey('settingId', $cfg->getAllByContext());
-        $this->assertArrayNotHasKey('settingId', $cfg->getAllByContext('unknownContext'));
+        $this->assertArrayHasKey('settingId', $cfg->getAllByContextRaw());
+        $this->assertArrayNotHasKey('settingId', $cfg->getAllByContextRaw('unknownContext'));
     }
 
     public function setUp(): void
