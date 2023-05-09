@@ -17,7 +17,17 @@ final class Config
     /**
      * @var array
      */
+    private $properties = [];
+
+    /**
+     * @var array
+     */
     private $observers = [];
+
+    /**
+     * @var array
+     */
+    private $propertyObservers = [];
 
     /**
      * @param array $hydrateApp
@@ -38,7 +48,19 @@ final class Config
         $this->settings[ $context ] = $data;
     }
 
-    public function registerObserver($settingId, $observerClassName, $context = self::CONTEXT_APP): void
+    /**
+     * @param array  $data
+     * @param string $context
+     * @param string $resourceId
+     *
+     * @return void
+     */
+    public function hydrateResource(array $data, string $context, string $resourceId): void
+    {
+        $this->properties[ $context ][ $resourceId ] = $data;
+    }
+
+    public function registerObserver(string $settingId, string $observerClassName, $context = self::CONTEXT_APP): void
     {
         if (isset($this->observers[ $context ][ $settingId ])) {
             throw new \UnexpectedValueException("$settingId is already registered.");
@@ -47,9 +69,23 @@ final class Config
         $this->observers[ $context ][ $settingId ] = $observerClassName;
     }
 
+    public function registerPropertyObserver(string $settingId, string $observerClassName, string $context): void
+    {
+        if (isset($this->propertyObservers[ $context ][ $settingId ])) {
+            throw new \UnexpectedValueException("$settingId is already registered.");
+        }
+
+        $this->propertyObservers[ $context ][ $settingId ] = $observerClassName;
+    }
+
     public function getAllByContextRaw(string $context = self::CONTEXT_APP): array
     {
         return $this->settings[ $context ] ?? [];
+    }
+
+    public function getAllPropertiesByContextRaw(string $context): array
+    {
+        return $this->properties[ $context ] ?? [];
     }
 
     public function getAllByContext(string $context = self::CONTEXT_APP): array
@@ -65,9 +101,29 @@ final class Config
         return $settings;
     }
 
+    public function getAllPropertiesByContext(string $context): array
+    {
+        $settings = [];
+        if (!isset($this->propertyObservers[ $context ], $this->properties[ $context ])) {
+            return [];
+        }
+        foreach ($this->propertyObservers[ $context ] as $settingId => $observer) {
+            foreach ($this->properties[ $context ] as $resourceId => $properties) {
+                $settings[ $resourceId ][ $settingId ] = $this->getProperty($settingId, $context, $resourceId);
+            }
+        }
+
+        return $settings;
+    }
+
     public function getAllRaw(): array
     {
         return $this->settings;
+    }
+
+    public function getAllPropertiesRaw(): array
+    {
+        return $this->properties;
     }
 
     public function getAll(): array
@@ -76,6 +132,21 @@ final class Config
         foreach ($this->observers as $context => $observers) {
             foreach ($observers as $settingId => $observer) {
                 $settings[ $context ][ $settingId ] = $this->get($settingId, $context);
+            }
+        }
+
+        return $settings;
+    }
+
+    public function getAllProperties(): array
+    {
+        $settings = [];
+        foreach ($this->propertyObservers as $context => $observers) {
+            foreach ($observers as $settingId => $observer) {
+                $props = $this->properties[ $context ] ?? [];
+                foreach ($props as $resourceId => $properties) {
+                    $settings[ $context ][ $resourceId ][ $settingId ] = $this->getProperty($settingId, $context, $resourceId);
+                }
             }
         }
 
@@ -110,6 +181,38 @@ final class Config
 
     }
 
+    public function getProperty(string $settingId, string $context, string $resourceId)
+    {
+        if (!isset($this->propertyObservers[ $context ][ $settingId ])) {
+            throw new \UnexpectedValueException("$settingId is not a registered property.");
+        }
+
+        if (!isset($this->properties[ $context ][ $resourceId ])) {
+            throw new \UnexpectedValueException("Resource $resourceId is not found in the $context context.");
+        }
+
+        /** @var PropertyObserverInterface $observerClass */
+        $observerClass = $this->propertyObservers[ $context ][ $settingId ];
+
+        if (!isset($this->properties[ $context ][ $resourceId ][ $settingId ])) {
+            return $this->resolveDependencies($observerClass::default($resourceId), $observerClass::dependencies($resourceId));
+        }
+
+        $settingValue = $this->properties[ $context ][ $resourceId ][ $settingId ];
+
+        if (!$observerClass::validate($settingValue, $resourceId)) {
+            throw new \UnexpectedValueException("$settingId has an invalid value: $settingValue");
+        }
+
+        $observerClass::onGet($settingValue, $resourceId);
+
+        return $this->resolveDependencies(
+            $observerClass::sanitize($settingValue, $resourceId),
+            $observerClass::dependencies($resourceId)
+        );
+
+    }
+
     public function save(string $settingId, $value, string $context = self::CONTEXT_APP): void
     {
         if (!isset($this->observers[ $context ][ $settingId ])) {
@@ -126,6 +229,24 @@ final class Config
         $observerClass::onSave($value);
 
         $this->settings[ $context ][ $settingId ] = $observerClass::sanitize($value);
+    }
+
+    public function saveProperty(string $settingId, $value, string $context, string $resourceId): void
+    {
+        if (!isset($this->propertyObservers[ $context ][ $settingId ])) {
+            throw new \UnexpectedValueException("$settingId is not a registered property.");
+        }
+
+        /** @var PropertyObserverInterface $observerClass */
+        $observerClass = $this->propertyObservers[ $context ][ $settingId ];
+
+        if (!$observerClass::validate($value, $resourceId)) {
+            throw new \UnexpectedValueException("$settingId has an invalid value: $value");
+        }
+
+        $observerClass::onSave($value, $resourceId);
+
+        $this->properties[ $context ][ $resourceId ][ $settingId ] = $observerClass::sanitize($value, $resourceId);
     }
 
     /**
