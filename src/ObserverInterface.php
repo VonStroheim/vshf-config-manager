@@ -17,5 +17,7 @@ interface ObserverInterface
 
     public static function onGet($value): void;
 
+    public static function onBeforeGet(): void;
+
     public static function dependencies(): ?Dependency;
 }

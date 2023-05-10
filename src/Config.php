@@ -187,6 +187,8 @@ final class Config
         /** @var ObserverInterface $observerClass */
         $observerClass = $this->observers[ $context ][ $settingId ];
 
+        $observerClass::onBeforeGet();
+
         if (!isset($this->settings[ $context ][ $settingId ])) {
             return $this->resolveDependencies($observerClass::default(), $observerClass::dependencies());
         }
@@ -212,12 +214,14 @@ final class Config
             throw new \UnexpectedValueException("$settingId is not a registered property.");
         }
 
+        /** @var PropertyObserverInterface $observerClass */
+        $observerClass = $this->propertyObservers[ $context ][ $settingId ];
+
+        $observerClass::onBeforeGet($resourceId);
+
         if (!isset($this->properties[ $context ][ $resourceId ])) {
             throw new \UnexpectedValueException("Resource $resourceId is not found in the $context context.");
         }
-
-        /** @var PropertyObserverInterface $observerClass */
-        $observerClass = $this->propertyObservers[ $context ][ $settingId ];
 
         if (!isset($this->properties[ $context ][ $resourceId ][ $settingId ])) {
             return $this->resolveDependencies($observerClass::default($resourceId), $observerClass::dependencies($resourceId));

@@ -17,5 +17,7 @@ interface PropertyObserverInterface
 
     public static function onGet($value, $resourceId): void;
 
+    public static function onBeforeGet($resourceId): void;
+
     public static function dependencies($resourceId): ?Dependency;
 }
