@@ -116,6 +116,31 @@ final class Config
         return $settings;
     }
 
+    public function resourceExists(string $context, string $resourceId): bool
+    {
+        return isset($this->properties[ $context ][ $resourceId ]);
+    }
+
+    public function getResourceProperties(string $context, string $resourceId): array
+    {
+        $resource = [];
+        if (!isset($this->propertyObservers[ $context ], $this->properties[ $context ])) {
+            return [];
+        }
+        foreach ($this->propertyObservers[ $context ] as $settingId => $observer) {
+            $resource[ $settingId ] = $this->getProperty($settingId, $context, $resourceId);
+        }
+
+        return $resource;
+    }
+
+    public function getResourcePropertiesRaw(string $context, string $resourceId): array
+    {
+        $resource = [];
+
+        return $this->properties[ $context ][ $resourceId ] ?? [];
+    }
+
     public function getAllRaw(): array
     {
         return $this->settings;
