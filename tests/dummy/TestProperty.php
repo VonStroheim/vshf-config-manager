@@ -41,4 +41,9 @@ class TestProperty implements PropertyObserverInterface
     {
         return NULL;
     }
+
+    public static function onBeforeGet($resourceId): void
+    {
+        // TODO: Implement onBeforeGet() method.
+    }
 }

@@ -26,10 +26,36 @@ class ObserverTest extends TestCase
      */
     public function testObserverOnGetCallback(): void
     {
-        $cfg = new Config([TestSetting::ID => TestSetting::default()]);
+        $cfg                 = new Config([TestSetting::ID => TestSetting::default()]);
+        TestSetting::$cfgObj = 'onGet';
         $cfg->registerObserver(TestSetting::ID, TestSetting::class);
         $this->expectExceptionMessage('onGet');
         $cfg->get(TestSetting::ID);
+    }
+
+    /**
+     * @return void
+     * @covers
+     */
+    public function testObserverOnBeforeGetCallback(): void
+    {
+        $cfg = new Config([TestSetting::ID => TestSetting::default()]);
+        $cfg->registerObserver(TestSetting::ID, TestSetting::class);
+        $this->expectExceptionMessage('onBeforeGet');
+        $cfg->get(TestSetting::ID);
+    }
+
+    /**
+     * @return void
+     * @covers
+     */
+    public function testObserverOnBeforeGetCallbackManipulation(): void
+    {
+        $cfg                 = new Config([TestSetting::ID => TestSetting::default()]);
+        TestSetting::$cfgObj = $cfg;
+        $cfg->registerObserver(TestSetting::ID, TestSetting::class);
+        $cfg->registerObserver('onBeforeGet', TestSetting::class);
+        $this->assertEquals('hello', $cfg->get('onBeforeGet'));
     }
 
 }

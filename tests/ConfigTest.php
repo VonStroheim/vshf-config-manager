@@ -234,6 +234,7 @@ class ConfigTest extends TestCase
         $this->observer->allows('default')->andReturn('defaultValue');
         $this->observer->allows('onGet');
         $this->observer->allows('onSave');
+        $this->observer->allows('onBeforeGet');
         $this->observer
             ->allows('sanitize')
             ->with(\Mockery::type('string'))
@@ -242,6 +243,7 @@ class ConfigTest extends TestCase
         $this->propertyObserver = \Mockery::mock('overload:VSHF\Config\PropertyObserverInterface');
         $this->propertyObserver->allows('default')->andReturn('defaultValue');
         $this->propertyObserver->allows('onGet');
+        $this->propertyObserver->allows('onBeforeGet');
         $this->propertyObserver->allows('onSave');
         $this->propertyObserver
             ->allows('sanitize')
