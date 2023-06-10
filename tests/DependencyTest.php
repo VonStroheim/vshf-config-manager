@@ -13,6 +13,7 @@ class DependencyTest extends TestCase
         $this->observer = \Mockery::mock('overload:VSHF\Config\ObserverInterface');
         $this->observer->allows('default')->andReturn('defaultValue');
         $this->observer->allows('onGet');
+        $this->observer->allows('onBeforeGet');
         $this->observer->allows('onSave');
         $this->observer
             ->allows('sanitize')
@@ -27,7 +28,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\Dependency::getConditions
      * @covers \VSHF\Config\DependencyCondition::beingEqualTo
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -65,7 +66,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\Dependency::getConditions
      * @covers \VSHF\Config\DependencyCondition::beingNotEqualTo
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -103,7 +104,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\Dependency::getConditions
      * @covers \VSHF\Config\DependencyCondition::beingTruthy
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -141,7 +142,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\Dependency::getConditions
      * @covers \VSHF\Config\DependencyCondition::beingFalsy
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -179,7 +180,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\Dependency::getConditions
      * @covers \VSHF\Config\DependencyCondition::beingEmpty
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -217,7 +218,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\Dependency::getConditions
      * @covers \VSHF\Config\DependencyCondition::beingNotEmpty
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -255,7 +256,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\Dependency::getConditions
      * @covers \VSHF\Config\DependencyCondition::beingIn
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -296,7 +297,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\Dependency::getConditions
      * @covers \VSHF\Config\DependencyCondition::beingNotIn
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -339,7 +340,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\DependencyCondition::beingEqualTo
      * @covers \VSHF\Config\DependencyCondition::beingIn
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -387,7 +388,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\DependencyCondition::beingEqualTo
      * @covers \VSHF\Config\DependencyCondition::beingIn
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -436,7 +437,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\DependencyCondition::beingEqualTo
      * @covers \VSHF\Config\DependencyCondition::beingIn
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -489,7 +490,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\DependencyCondition::beingEqualTo
      * @covers \VSHF\Config\DependencyCondition::beingIn
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -540,7 +541,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\DependencyCondition::beingEqualTo
      * @covers \VSHF\Config\DependencyCondition::beingIn
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */
@@ -583,7 +584,7 @@ class DependencyTest extends TestCase
      * @covers \VSHF\Config\DependencyCondition::beingEqualTo
      * @covers \VSHF\Config\DependencyCondition::beingIn
      * @covers \VSHF\Config\DependencyCondition::verified
-     * @covers \VSHF\Config\DependencyCondition::add_self_to_dep_and_return_it
+     * @covers \VSHF\Config\DependencyCondition::addSelfToDependencyAndReturnIt
      * @covers \VSHF\Config\DependencyCondition::getSettingId
      * @covers \VSHF\Config\DependencyCondition::getContext
      */

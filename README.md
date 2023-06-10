@@ -1,16 +1,16 @@
 ## VSHF PHP Config Manager
 
-A settings/configuration manager for PHP Applications. It can also handle resources with their properties.
+VSHF PHP Config Manager is a settings/configuration manager for PHP applications. It provides functionality to handle settings and resources with their properties.
 
 ## Usage
 
-Instantiate the Config instance:
+To use the VSHF Config Manager, you need to instantiate the `Config` class:
 
 ```php
 $settings = new \VSHF\Config\Config();
 ```
 
-To hydrate with settings:
+You can also initialize it with settings:
 
 ```php
 $settings = new \VSHF\Config\Config([
@@ -20,11 +20,9 @@ $settings = new \VSHF\Config\Config([
 ```
 
 ### Contexts
+The default setting context is the _app_ context. When initializing with settings, they will be added to this context. 
 
-The main (default) setting context is the _app_ context. Hydrating with settings in the constructor will feed that
-context.
-
-You can hydrate different context later on:
+You can hydrate different contexts later on:
 
 ```php
 $settings->hydrate(
@@ -36,7 +34,7 @@ $settings->hydrate(
 );
 ```
 
-This will produce an internal settings tree like the following:
+This will create an internal settings tree with the following structure:
 
 ```
 [
@@ -53,15 +51,9 @@ This will produce an internal settings tree like the following:
 
 ### Resources and properties
 
-A particular case is when you have a collection of resources and their properties, and those properties can be
-considered as _settings_ for that particular resource record.
+In the case of having a collection of resources and their properties, where the properties can be considered as _settings_ for each resource, you can use the Config Manager to handle them. 
 
-Consider, for instance, a collection of _Services_, each
-one having a _isPriced_ property. The app needs to behave differently, observing the value of this property, depending
-on what service
-is considered.
-
-Example of resource collection:
+For example, if you have a collection of _services_ with the _isPriced_ property, you can observe the value of this property for different services.
 
 ```
 [
@@ -94,11 +86,9 @@ foreach ($collection as $itemId => $item) {
 
 ## Observers
 
-Each setting must have its Observer (that implements ObserverInterface).
+Each setting must have its corresponding _Observer_, which implements the `ObserverInterface`. An observer can handle one or more settings.
 
-An observer can handle one or more settings.
-
-To register an Observer:
+To register an observer:
 
 ```php
 
@@ -114,11 +104,9 @@ $settings->registerObserver('settingA', MyObserver::class);
 $settings->registerObserver('settingB', MyObserver::class);
 ```
 
-### Resource properties observers
+### Resource property observers
 
-Each resource property must have its PropertyObserver (that implements PropertyObserverInterface).
-
-An observer can handle one or more properties.
+Similarly, each resource property must have its _PropertyObserver_, which implements the `PropertyObserverInterface`. An observer can handle one or more properties.
 
 To register a PropertyObserver:
 
@@ -175,9 +163,9 @@ $settings->getResourceProperties('services', 'resourceId');
 
 ## Setting dependencies
 
-A setting (or a resource property) can depend on one or more other settings, even from different contexts.
+A setting or a resource property can depend on one or more other settings, even from different contexts. 
 
-To set dependencies, the Observer's _dependencies_ method must return a _Dependency_ object:
+To set dependencies, the `dependencies()` method of the observer must return a _Dependency_ object.
 
 ```php
 // Inside settingA's observer class
@@ -191,14 +179,13 @@ public static function dependencies(){
 }
 ```
 
-In this example, if _settingB_ is equal to _certainValue_, then _settingA_ is properly returned. Otherwise, NULL is
-returned.
+In this example, if _settingB_ is equal to _certainValue_, then _settingA_ is properly returned. Otherwise, NULL is returned. 
 
-Note: carefully consider that NULL should never be a default/proper setting value.
+It's important to note that NULL should not be a default/proper setting value.
 
 ### Complex dependencies
 
-Dependencies can be complex:
+Dependencies can be complex and involve logical operators such as _AND_ and _OR_. You can construct complex dependencies using the _Dependency_ object.
 
 ```php
 $dependency = new \VSHF\Config\Dependency();
@@ -266,4 +253,4 @@ $dependency
 
 ## License
 
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/MIT)
+This project is open-source software licensed under the [MIT license](https://opensource.org/MIT)
