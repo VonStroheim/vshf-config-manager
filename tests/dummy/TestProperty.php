@@ -46,4 +46,9 @@ class TestProperty implements PropertyObserverInterface
     {
         // TODO: Implement onBeforeGet() method.
     }
+
+    public static function onGetFilter($resourceId, $value)
+    {
+        return $value;
+    }
 }

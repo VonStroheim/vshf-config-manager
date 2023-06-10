@@ -62,4 +62,9 @@ class TestSetting implements ObserverInterface
             throw new \RuntimeException('onBeforeGet');
         }
     }
+
+    public static function onGetFilter($value)
+    {
+        return $value;
+    }
 }

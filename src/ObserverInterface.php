@@ -60,6 +60,15 @@ interface ObserverInterface
     public static function onBeforeGet(): void;
 
     /**
+     * Handles filters to be applied to the return value.
+     *
+     * @param mixed $value The value being retrieved.
+     *
+     * @return mixed The filtered value.
+     */
+    public static function onGetFilter($value);
+
+    /**
      * Retrieves the dependency associated with the observer, if any.
      *
      * @return Dependency|null The dependency associated with the observer, or null if there is no dependency.

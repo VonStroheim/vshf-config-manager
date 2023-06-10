@@ -235,6 +235,7 @@ class ConfigTest extends TestCase
         $this->observer->allows('onGet');
         $this->observer->allows('onSave');
         $this->observer->allows('onBeforeGet');
+        $this->observer->allows('onGetFilter')->andReturnArg(0);
         $this->observer
             ->allows('sanitize')
             ->with(\Mockery::type('string'))
@@ -245,6 +246,7 @@ class ConfigTest extends TestCase
         $this->propertyObserver->allows('onGet');
         $this->propertyObserver->allows('onBeforeGet');
         $this->propertyObserver->allows('onSave');
+        $this->propertyObserver->allows('onGetFilter')->andReturnArg(1);
         $this->propertyObserver
             ->allows('sanitize')
             ->with(\Mockery::type('string'), \Mockery::type('string'))

@@ -14,6 +14,7 @@ class DependencyTest extends TestCase
         $this->observer->allows('default')->andReturn('defaultValue');
         $this->observer->allows('onGet');
         $this->observer->allows('onBeforeGet');
+        $this->observer->allows('onGetFilter')->andReturnArg(0);
         $this->observer->allows('onSave');
         $this->observer
             ->allows('sanitize')

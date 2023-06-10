@@ -378,11 +378,12 @@ final class Config
 
         $observerClass::onGet($settingValue);
 
-        return $this->resolveDependencies(
+        $resolvedValue = $this->resolveDependencies(
             $observerClass::sanitize($settingValue),
             $observerClass::dependencies()
         );
 
+        return $observerClass::onGetFilter($resolvedValue);
     }
 
     /**
@@ -417,10 +418,12 @@ final class Config
 
         $observerClass::onGet($settingValue, $resourceId);
 
-        return $this->resolveDependencies(
+        $resolvedValue = $this->resolveDependencies(
             $observerClass::sanitize($settingValue, $resourceId),
             $observerClass::dependencies($resourceId)
         );
+
+        return $observerClass::onGetFilter($resourceId, $resolvedValue);
 
     }
 

@@ -69,6 +69,16 @@ interface PropertyObserverInterface
     public static function onBeforeGet($resourceId): void;
 
     /**
+     * Handles filters to be applied to the return value.
+     *
+     * @param mixed $resourceId The ID of the associated resource.
+     * @param mixed $value      The value being retrieved.
+     *
+     * @return mixed The filtered value.
+     */
+    public static function onGetFilter($resourceId, $value);
+
+    /**
      * Retrieves the dependency associated with the observer for a specific resource, if any.
      *
      * @param mixed $resourceId The ID of the associated resource.
