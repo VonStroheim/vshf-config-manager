@@ -66,6 +66,31 @@ final class Config
     }
 
     /**
+     * Used to drop the properties array for a specific resource in the specified context.
+     *
+     * @param string $context    The context in which the properties array should be dropped.
+     * @param string $resourceId The identifier of the resource for which the data should be dropped.
+     *
+     * @return void
+     */
+    public function dropResource(string $context, string $resourceId): void
+    {
+        unset($this->properties[ $context ][ $resourceId ]);
+    }
+
+    /**
+     * Used to drop the resources for the specified context.
+     *
+     * @param string $context The context in which the resources should be dropped.
+     *
+     * @return void
+     */
+    public function dropResources(string $context): void
+    {
+        unset($this->properties[ $context ]);
+    }
+
+    /**
      * Used to register an observer class for a specific setting in the specified context.
      *
      * @param string $settingId         The identifier of the setting to register the observer for.
